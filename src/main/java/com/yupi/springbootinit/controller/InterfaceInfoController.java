@@ -123,7 +123,7 @@ public class InterfaceInfoController {
     /**
      * 根据 id 获取
      *
-     * @param id
+     * @param id 接口id
      * @return
      */
     @GetMapping("/get/vo")
