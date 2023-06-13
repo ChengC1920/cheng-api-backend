@@ -1,12 +1,11 @@
 package com.yupi.springbootinit.controller;
 
+import cn.ichensw.neroclientsdk.client.NeroApiClient;
+import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.yupi.springbootinit.annotation.AuthCheck;
-import com.yupi.springbootinit.common.BaseResponse;
-import com.yupi.springbootinit.common.DeleteRequest;
-import com.yupi.springbootinit.common.ErrorCode;
-import com.yupi.springbootinit.common.ResultUtils;
+import com.yupi.springbootinit.common.*;
 import com.yupi.springbootinit.constant.UserConstant;
 import com.yupi.springbootinit.exception.BusinessException;
 import com.yupi.springbootinit.exception.ThrowUtils;
@@ -15,6 +14,7 @@ import com.yupi.springbootinit.model.dto.interfaceinfo.InterfaceInfoQueryRequest
 import com.yupi.springbootinit.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.yupi.springbootinit.model.entity.InterfaceInfo;
 import com.yupi.springbootinit.model.entity.User;
+import com.yupi.springbootinit.model.enums.InterfaceInfoStatusEnum;
 import com.yupi.springbootinit.model.vo.InterfaceInfoVO;
 import com.yupi.springbootinit.service.InterfaceInfoService;
 import com.yupi.springbootinit.service.UserService;
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 帖子接口
+ * 接口管理
  *
  * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
@@ -42,6 +42,9 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private NeroApiClient neroApiClient;
 
     private final static Gson GSON = new Gson();
 
@@ -156,6 +159,63 @@ public class InterfaceInfoController {
                 interfaceInfoService.getQueryWrapper(interfaceInfoQueryRequest));
         return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
     }
+
+
+    /**
+     * 发布（仅管理员）
+     *
+     * @param idRequest
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断接口是否存在
+        Long id = idRequest.getId();
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
+        // 判断是否可以调用
+        cn.ichensw.neroclientsdk.model.User user = new cn.ichensw.neroclientsdk.model.User();
+        user.setUserName("neroclientsdk");
+        String username = neroApiClient.getUserNameByPost(user);
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
+        }
+
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 下线（仅管理员）
+     *
+     * @param idRequest
+     * @return
+     */
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断接口是否存在
+        Long id = idRequest.getId();
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
+
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+
 
     /**
      * 分页获取当前用户创建的资源列表

@@ -90,3 +90,8 @@ cos:
     secretKey: xxx
     region: xxx
     bucket: xxx
+
+nero:
+  client:
+    access-key: nero
+    secret-key: abcdefgh
