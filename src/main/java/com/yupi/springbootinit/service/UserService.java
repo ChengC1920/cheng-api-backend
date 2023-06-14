@@ -118,4 +118,10 @@ public interface UserService extends IService<User> {
      */
     QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 
+    /**
+     * 更新 secretKey
+     * @param id 用户id
+     * @return boolean
+     */
+    boolean updateSecretKey(Long id);
 }
