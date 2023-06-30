@@ -7,5 +7,5 @@ import lombok.ToString;
 @ToString
 public class User {
 
-    private String userName;
+    private String username;
 }

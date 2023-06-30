@@ -17,6 +17,9 @@ import static cn.ichensw.neroclientsdk.utils.SignUtils.genSign;
  */
 public class NeroApiClient {
 
+    public static final String GLOBAL_URL = "http://localhost:8090";
+
+
     private String accessKey;
 
     private String secretKey;
@@ -29,7 +32,7 @@ public class NeroApiClient {
     public String getNameByGet(String name) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String result = HttpUtil.get("http://localhost:8123/api/name/", paramMap);
+        String result = HttpUtil.get(GLOBAL_URL + "/api/name/", paramMap);
         System.out.println(result);
         return result;
     }
@@ -38,7 +41,7 @@ public class NeroApiClient {
     public String getNameByPost(String name) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String result = HttpUtil.post("http://localhost:8123/api/name/", paramMap);
+        String result = HttpUtil.post(GLOBAL_URL + "/api/name/", paramMap);
         System.out.println(result);
         return result;
     }
@@ -57,7 +60,7 @@ public class NeroApiClient {
 
     public String getUserNameByPost(User user) {
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post("http://localhost:8123/api/name/user")
+        HttpResponse httpResponse = HttpRequest.post(GLOBAL_URL + "/api/name/user")
                 .addHeaders(getHeaderMap(json))
                 .body(json)
                 .execute();

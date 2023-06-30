@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.ichensw</groupId>
         <artifactId>nero-api-backend</artifactId>
         <version>0.0.1</version>
+        <relativePath/>
     </parent>
 
-    <artifactId>nero-api-interface</artifactId>
-    <version>0.0.1</version>
+    <modelVersion>4.0.0</modelVersion>
 
-    <description>接口模块</description>
+    <artifactId>nero-api-gateway</artifactId>
+    <packaging>jar</packaging>
+
+    <description>服务网关</description>
 
     <dependencies>
         <!--NeroApi SDK-->
@@ -20,10 +22,17 @@
             <artifactId>neroapi-client-sdk</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <!--framework框架核心-->
+
+        <!-- Spring Cloud Gateway-->
         <dependency>
-            <groupId>cn.ichensw</groupId>
-            <artifactId>nero-api-framework</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 
