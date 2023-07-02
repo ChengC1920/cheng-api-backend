@@ -59,6 +59,12 @@
                 <artifactId>nero-api-gateway</artifactId>
                 <version>${nero-api.version}</version>
             </dependency>
+            <!--通用模块-->
+            <dependency>
+                <groupId>cn.ichensw</groupId>
+                <artifactId>nero-api-common</artifactId>
+                <version>${nero-api.version}</version>
+            </dependency>
             <!--Web核心模块-->
             <dependency>
                 <groupId>cn.ichensw</groupId>
@@ -74,6 +80,7 @@
         <module>nero-api-gateway</module>
         <module>nero-api-framework</module>
         <module>nero-api-interface</module>
+        <module>nero-api-common</module>
     </modules>
     <packaging>pom</packaging>
 

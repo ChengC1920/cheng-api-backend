@@ -1,35 +1,34 @@
 package cn.ichensw.neroapiadmin.service.impl;
 
-import static cn.ichensw.neroapiadmin.constant.UserConstant.USER_LOGIN_STATE;
-
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.ichensw.neroapiadmin.exception.BusinessException;
+import cn.ichensw.neroapiadmin.mapper.UserMapper;
+import cn.ichensw.neroapiadmin.service.UserService;
+import cn.ichensw.neroapiadmin.utils.SqlUtils;
+import cn.ichensw.neroapicommon.common.ErrorCode;
+import cn.ichensw.neroapicommon.constant.CommonConstant;
+import cn.ichensw.neroapicommon.model.dto.user.UserQueryRequest;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.enums.UserRoleEnum;
+import cn.ichensw.neroapicommon.model.vo.LoginUserVO;
+import cn.ichensw.neroapicommon.model.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.ichensw.neroapiadmin.common.ErrorCode;
-import cn.ichensw.neroapiadmin.constant.CommonConstant;
-import cn.ichensw.neroapiadmin.exception.BusinessException;
-import cn.ichensw.neroapiadmin.mapper.UserMapper;
-import cn.ichensw.neroapiadmin.model.dto.user.UserQueryRequest;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.enums.UserRoleEnum;
-import cn.ichensw.neroapiadmin.model.vo.LoginUserVO;
-import cn.ichensw.neroapiadmin.model.vo.UserVO;
-import cn.ichensw.neroapiadmin.service.UserService;
-import cn.ichensw.neroapiadmin.utils.SqlUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static cn.ichensw.neroapicommon.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现

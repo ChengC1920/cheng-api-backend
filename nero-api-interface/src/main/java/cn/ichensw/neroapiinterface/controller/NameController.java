@@ -2,7 +2,6 @@ package cn.ichensw.neroapiinterface.controller;
 
 import cn.ichensw.neroclientsdk.model.User;
 import cn.ichensw.neroclientsdk.utils.SignUtils;
-import com.sun.deploy.util.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.bind.annotation.*;
 

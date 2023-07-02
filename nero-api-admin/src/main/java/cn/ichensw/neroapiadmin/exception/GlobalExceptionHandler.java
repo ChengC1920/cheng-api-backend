@@ -1,8 +1,8 @@
 package cn.ichensw.neroapiadmin.exception;
 
-import cn.ichensw.neroapiadmin.common.BaseResponse;
-import cn.ichensw.neroapiadmin.common.ErrorCode;
-import cn.ichensw.neroapiadmin.common.ResultUtils;
+import cn.ichensw.neroapicommon.common.BaseResponse;
+import cn.ichensw.neroapicommon.common.ErrorCode;
+import cn.ichensw.neroapicommon.common.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

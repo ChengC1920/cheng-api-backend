@@ -1,20 +1,16 @@
 package cn.ichensw.neroapiadmin.controller;
 
 import cn.hutool.core.io.FileUtil;
-import cn.ichensw.neroapiadmin.common.BaseResponse;
-import cn.ichensw.neroapiadmin.common.ErrorCode;
-import cn.ichensw.neroapiadmin.common.ResultUtils;
-import cn.ichensw.neroapiadmin.constant.FileConstant;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
 import cn.ichensw.neroapiadmin.manager.CosManager;
-import cn.ichensw.neroapiadmin.model.dto.file.UploadFileRequest;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.enums.FileUploadBizEnum;
 import cn.ichensw.neroapiadmin.service.UserService;
-import java.io.File;
-import java.util.Arrays;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import cn.ichensw.neroapicommon.common.BaseResponse;
+import cn.ichensw.neroapicommon.common.ErrorCode;
+import cn.ichensw.neroapicommon.common.ResultUtils;
+import cn.ichensw.neroapicommon.constant.FileConstant;
+import cn.ichensw.neroapicommon.model.dto.file.UploadFileRequest;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.enums.FileUploadBizEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.Arrays;
 
 /**
  * 文件接口

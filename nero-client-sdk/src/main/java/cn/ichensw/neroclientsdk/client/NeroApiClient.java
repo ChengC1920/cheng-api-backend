@@ -60,7 +60,7 @@ public class NeroApiClient {
 
     public String getUserNameByPost(User user) {
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post(GLOBAL_URL + "/api/name/user")
+        HttpResponse httpResponse = HttpRequest.post(user.getHost() + "/api/name/user")
                 .addHeaders(getHeaderMap(json))
                 .body(json)
                 .execute();

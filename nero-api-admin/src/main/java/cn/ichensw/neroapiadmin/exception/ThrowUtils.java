@@ -1,6 +1,6 @@
 package cn.ichensw.neroapiadmin.exception;
 
-import cn.ichensw.neroapiadmin.common.ErrorCode;
+import cn.ichensw.neroapicommon.common.ErrorCode;
 
 /**
  * 抛异常工具类

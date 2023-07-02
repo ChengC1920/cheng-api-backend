@@ -1,6 +1,6 @@
 package cn.ichensw.neroapiadmin.mapper;
 
-import cn.ichensw.neroapiadmin.model.entity.UserInterfaceInfo;
+import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
