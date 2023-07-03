@@ -1,13 +1,10 @@
 package cn.ichensw.neroapiadmin.service;
 
+import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
+import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.ichensw.neroapiadmin.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
-import cn.ichensw.neroapiadmin.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
-import cn.ichensw.neroapiadmin.model.entity.InterfaceInfo;
-import cn.ichensw.neroapiadmin.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
-import cn.ichensw.neroapiadmin.model.vo.InterfaceInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
 

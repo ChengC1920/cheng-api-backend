@@ -1,14 +1,15 @@
 package cn.ichensw.neroapiadmin.service;
 
+import cn.ichensw.neroapicommon.model.dto.user.UserQueryRequest;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.vo.LoginUserVO;
+import cn.ichensw.neroapicommon.model.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import cn.ichensw.neroapiadmin.model.dto.user.UserQueryRequest;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.vo.LoginUserVO;
-import cn.ichensw.neroapiadmin.model.vo.UserVO;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 用户服务

@@ -95,3 +95,13 @@ nero:
   client:
     access-key: nero
     secret-key: abcdefgh
+
+dubbo:
+  application:
+    name: nero-api-admin-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848

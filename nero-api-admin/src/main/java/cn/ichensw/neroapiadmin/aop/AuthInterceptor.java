@@ -1,10 +1,10 @@
 package cn.ichensw.neroapiadmin.aop;
 
 import cn.ichensw.neroapiadmin.annotation.AuthCheck;
-import cn.ichensw.neroapiadmin.common.ErrorCode;
+import cn.ichensw.neroapicommon.common.ErrorCode;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.enums.UserRoleEnum;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.enums.UserRoleEnum;
 import cn.ichensw.neroapiadmin.service.UserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

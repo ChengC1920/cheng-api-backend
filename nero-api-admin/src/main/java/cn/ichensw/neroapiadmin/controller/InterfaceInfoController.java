@@ -1,24 +1,24 @@
 package cn.ichensw.neroapiadmin.controller;
 
+import cn.ichensw.neroapiadmin.annotation.AuthCheck;
+import cn.ichensw.neroapiadmin.exception.BusinessException;
+import cn.ichensw.neroapiadmin.exception.ThrowUtils;
+import cn.ichensw.neroapiadmin.service.InterfaceInfoService;
+import cn.ichensw.neroapiadmin.service.UserService;
+import cn.ichensw.neroapicommon.common.*;
+import cn.ichensw.neroapicommon.constant.UserConstant;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
+import cn.ichensw.neroapicommon.model.entity.InterfaceInfo;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.enums.InterfaceInfoStatusEnum;
+import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
 import cn.ichensw.neroclientsdk.client.NeroApiClient;
 import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
-import cn.ichensw.neroapiadmin.annotation.AuthCheck;
-import cn.ichensw.neroapiadmin.common.*;
-import cn.ichensw.neroapiadmin.constant.UserConstant;
-import cn.ichensw.neroapiadmin.exception.BusinessException;
-import cn.ichensw.neroapiadmin.exception.ThrowUtils;
-import cn.ichensw.neroapiadmin.model.dto.interfaceinfo.InterfaceInfoAddRequest;
-import cn.ichensw.neroapiadmin.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
-import cn.ichensw.neroapiadmin.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
-import cn.ichensw.neroapiadmin.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
-import cn.ichensw.neroapiadmin.model.entity.InterfaceInfo;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.enums.InterfaceInfoStatusEnum;
-import cn.ichensw.neroapiadmin.model.vo.InterfaceInfoVO;
-import cn.ichensw.neroapiadmin.service.InterfaceInfoService;
-import cn.ichensw.neroapiadmin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -244,6 +244,7 @@ public class InterfaceInfoController {
         NeroApiClient tempApiClient = new NeroApiClient(accessKey, secretKey);
         Gson gson = new Gson();
         cn.ichensw.neroclientsdk.model.User user = gson.fromJson(userRequestParams, cn.ichensw.neroclientsdk.model.User.class);
+        user.setHost(interfaceInfoInvokeRequest.getHost());
         // 调用接口
         String userNameByPost = tempApiClient.getUserNameByPost(user);
         return ResultUtils.success(userNameByPost);

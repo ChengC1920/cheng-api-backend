@@ -1,38 +1,29 @@
 package cn.ichensw.neroapiadmin.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.ichensw.neroapiadmin.annotation.AuthCheck;
-import cn.ichensw.neroapiadmin.common.*;
 import cn.ichensw.neroapiadmin.config.WxOpenConfig;
-import cn.ichensw.neroapiadmin.constant.UserConstant;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
 import cn.ichensw.neroapiadmin.exception.ThrowUtils;
-import cn.ichensw.neroapiadmin.model.dto.user.UserAddRequest;
-import cn.ichensw.neroapiadmin.model.dto.user.UserLoginRequest;
-import cn.ichensw.neroapiadmin.model.dto.user.UserQueryRequest;
-import cn.ichensw.neroapiadmin.model.dto.user.UserRegisterRequest;
-import cn.ichensw.neroapiadmin.model.dto.user.UserUpdateMyRequest;
-import cn.ichensw.neroapiadmin.model.dto.user.UserUpdateRequest;
-import cn.ichensw.neroapiadmin.model.entity.User;
-import cn.ichensw.neroapiadmin.model.vo.LoginUserVO;
-import cn.ichensw.neroapiadmin.model.vo.UserVO;
 import cn.ichensw.neroapiadmin.service.UserService;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import cn.ichensw.neroapicommon.common.*;
+import cn.ichensw.neroapicommon.constant.UserConstant;
+import cn.ichensw.neroapicommon.model.dto.user.*;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.vo.LoginUserVO;
+import cn.ichensw.neroapicommon.model.vo.UserVO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 用户接口
