@@ -2,17 +2,19 @@ package cn.ichensw.neroapiadmin.service;
 
 import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
+import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
-* @author csw
-* @description 针对表【user_interface_info(用户调用接口关系)】的数据库操作Service
-* @createDate 2023-06-17 12:32:57
-*/
+ * @author csw
+ * @description 针对表【user_interface_info(用户调用接口关系)】的数据库操作Service
+ * @createDate 2023-06-17 12:32:57
+ */
 public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
 
     /**
@@ -40,4 +42,12 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
      * @return
      */
     Page<UserInterfaceInfo> getUserInterfaceInfoVOPage(Page<UserInterfaceInfo> userInterfaceInfoPage, HttpServletRequest request);
+
+    /**
+     * 获取接口调用排名前 n 的接口信息
+     *
+     * @param limit 前几名
+     * @return List<InterfaceInfoVO>
+     */
+    List<UserInterfaceInfo> listTopInvokeInterfaceInfo(int limit);
 }

@@ -6,6 +6,7 @@ import cn.ichensw.neroapiadmin.exception.ThrowUtils;
 import cn.ichensw.neroapiadmin.service.InterfaceInfoService;
 import cn.ichensw.neroapiadmin.service.UserService;
 import cn.ichensw.neroapicommon.common.*;
+import cn.ichensw.neroapicommon.constant.CommonConstant;
 import cn.ichensw.neroapicommon.constant.UserConstant;
 import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
@@ -29,8 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 接口管理
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
 @RequestMapping("/interfaceInfo")
@@ -144,15 +143,18 @@ public class InterfaceInfoController {
     /**
      * 分页获取列表（封装类）
      *
-     * @param interfaceInfoQueryRequest
-     * @param request
-     * @return
+     * @param interfaceInfoQueryRequest 查询条件
+     * @param request                   请求
+     * @return 分页列表
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<InterfaceInfoVO>> listInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
                                                                          HttpServletRequest request) {
         long current = interfaceInfoQueryRequest.getCurrent();
         long size = interfaceInfoQueryRequest.getPageSize();
+        interfaceInfoQueryRequest.setSortField("createTime");
+        // 倒序排序
+        interfaceInfoQueryRequest.setSortOrder(CommonConstant.SORT_ORDER_DESC);
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size),
@@ -164,8 +166,8 @@ public class InterfaceInfoController {
     /**
      * 发布（仅管理员）
      *
-     * @param idRequest
-     * @return
+     * @param idRequest 接口id
+     * @return 是否成功
      */
     @PostMapping("/online")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -180,6 +182,7 @@ public class InterfaceInfoController {
         // 判断是否可以调用
         cn.ichensw.neroclientsdk.model.User user = new cn.ichensw.neroclientsdk.model.User();
         user.setUsername("neroclientsdk");
+        user.setHost(oldInterfaceInfo.getHost());
         String username = neroApiClient.getUserNameByPost(user);
         if (StringUtils.isBlank(username)) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
@@ -195,8 +198,8 @@ public class InterfaceInfoController {
     /**
      * 下线（仅管理员）
      *
-     * @param idRequest
-     * @return
+     * @param idRequest 接口id
+     * @return 是否成功
      */
     @PostMapping("/offline")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -219,12 +222,12 @@ public class InterfaceInfoController {
     /**
      * 测试调用
      *
-     * @param interfaceInfoInvokeRequest
-     * @return
+     * @param interfaceInfoInvokeRequest 测试调用请求类
+     * @return 是否成功
      */
     @PostMapping("/invoke")
     public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
-                                                     HttpServletRequest request) {
+                                                    HttpServletRequest request) {
         // 校验传参和接口是否存在
         if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

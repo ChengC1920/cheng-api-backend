@@ -78,7 +78,6 @@
     <modules>
         <module>nero-api-admin</module>
         <module>nero-api-gateway</module>
-        <module>nero-api-framework</module>
         <module>nero-api-interface</module>
         <module>nero-api-common</module>
     </modules>

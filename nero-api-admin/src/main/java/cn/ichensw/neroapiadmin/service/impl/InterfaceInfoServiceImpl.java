@@ -1,18 +1,18 @@
 package cn.ichensw.neroapiadmin.service.impl;
 
-import cn.ichensw.neroapicommon.common.ErrorCode;
-import cn.ichensw.neroapicommon.constant.CommonConstant;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
 import cn.ichensw.neroapiadmin.exception.ThrowUtils;
 import cn.ichensw.neroapiadmin.mapper.InterfaceInfoMapper;
-import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
-import cn.ichensw.neroapicommon.model.entity.User;
-import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
-import cn.ichensw.neroapicommon.model.vo.UserVO;
 import cn.ichensw.neroapiadmin.service.InterfaceInfoService;
 import cn.ichensw.neroapiadmin.service.UserService;
 import cn.ichensw.neroapiadmin.utils.SqlUtils;
+import cn.ichensw.neroapicommon.common.ErrorCode;
+import cn.ichensw.neroapicommon.constant.CommonConstant;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import cn.ichensw.neroapicommon.model.entity.InterfaceInfo;
+import cn.ichensw.neroapicommon.model.entity.User;
+import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
+import cn.ichensw.neroapicommon.model.vo.UserVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,13 +30,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
-* @author csw
-* @description 针对表【interface_info(接口信息)】的数据库操作Service实现
-* @createDate 2023-06-07 09:37:06
-*/
+ * @author csw
+ * @description 针对表【interface_info(接口信息)】的数据库操作Service实现
+ * @createDate 2023-06-07 09:37:06
+ */
 @Service
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
-    implements InterfaceInfoService{
+        implements InterfaceInfoService {
 
     @Resource
     private UserService userService;
@@ -51,18 +51,12 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String description = interfaceInfo.getDescription();
         String url = interfaceInfo.getUrl();
         String requestParams = interfaceInfo.getRequestParams();
-        String requestHeader = interfaceInfo.getRequestHeader();
-        String responseHeader = interfaceInfo.getResponseHeader();
-        Integer status = interfaceInfo.getStatus();
+        String host = interfaceInfo.getHost();
         String method = interfaceInfo.getMethod();
-        Long userId = interfaceInfo.getUserId();
-        Date createTime = interfaceInfo.getCreateTime();
-        Date updateTime = interfaceInfo.getUpdateTime();
-        Integer isDelete = interfaceInfo.getIsDelete();
 
         // 创建时，参数不能为空
         if (add) {
-            ThrowUtils.throwIf(StringUtils.isAnyBlank(name, description, url, requestParams, method), ErrorCode.PARAMS_ERROR);
+            ThrowUtils.throwIf(StringUtils.isAnyBlank(name, description, url, host, requestParams, method), ErrorCode.PARAMS_ERROR);
         }
         // 有参数则校验
         if (StringUtils.isNotBlank(name) && name.length() > 50) {
@@ -110,6 +104,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
                 sortField);
         return queryWrapper;
     }
+
     @Override
     public InterfaceInfoVO getInterfaceInfoVO(InterfaceInfo interfaceInfo, HttpServletRequest request) {
         InterfaceInfoVO interfaceInfoVO = InterfaceInfoVO.objToVo(interfaceInfo);
