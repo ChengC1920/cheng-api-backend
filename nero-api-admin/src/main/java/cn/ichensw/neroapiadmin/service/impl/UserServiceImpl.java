@@ -75,9 +75,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 4. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
+            user.setUserName(StringUtils.upperCase(userAccount));
             user.setUserPassword(encryptPassword);
             user.setAccessKey(accessKey);
             user.setSecretKey(secretKey);
+            user.setUserAvatar("https://image-bed-ichensw.oss-cn-hangzhou.aliyuncs.com/Multiavatar-f5871c303317a4dafbf6.png");
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
