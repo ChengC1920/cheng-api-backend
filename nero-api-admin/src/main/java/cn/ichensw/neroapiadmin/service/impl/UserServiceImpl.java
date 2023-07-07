@@ -281,8 +281,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean updateSecretKey(Long id) {
         User user = this.getById(id);
+        String accessKey = DigestUtil.md5Hex(SALT + user.getUserAccount() + RandomUtil.randomNumbers(5));
         String secretKey = DigestUtil.md5Hex(SALT + user.getUserAccount() + RandomUtil.randomNumbers(8));
         user.setSecretKey(secretKey);
+        user.setAccessKey(accessKey);
         return this.updateById(user);
     }
 }
