@@ -16,7 +16,6 @@ public class NameController {
 
     @GetMapping("/get")
     public String getNameByGet(String name, HttpServletRequest request) {
-        System.out.println(request.getHeader("nero"));
         if (Strings.isBlank(name)) {
             throw new RuntimeException("错误");
         }
