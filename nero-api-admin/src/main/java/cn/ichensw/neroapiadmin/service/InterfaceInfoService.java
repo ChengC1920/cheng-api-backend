@@ -1,19 +1,21 @@
 package cn.ichensw.neroapiadmin.service;
 
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
+import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
+import cn.ichensw.neroapicommon.model.entity.InterfaceInfo;
+import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
+import cn.ichensw.neroclientsdk.client.NeroApiClient;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.ichensw.neroapicommon.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
-import cn.ichensw.neroapicommon.model.entity.InterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
-import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author csw
-* @description 针对表【interface_info(接口信息)】的数据库操作Service
-* @createDate 2023-06-07 09:37:06
-*/
+ * @author csw
+ * @description 针对表【interface_info(接口信息)】的数据库操作Service
+ * @createDate 2023-06-07 09:37:06
+ */
 public interface InterfaceInfoService extends IService<InterfaceInfo> {
 
     /**
@@ -50,4 +52,29 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @return
      */
     Page<InterfaceInfoVO> getInterfaceInfoVOPage(Page<InterfaceInfo> interfaceInfoPage, HttpServletRequest request);
+
+    /**
+     * 创建SDK客户端
+     *
+     * @param request 当前会话
+     * @return SDK客户端
+     */
+    NeroApiClient getNeroApiClient(HttpServletRequest request);
+
+    /**
+     * 修改接口信息
+     *
+     * @param interfaceInfoUpdateRequest 接口信息修改请求
+     * @return 是否成功
+     */
+    boolean updateInterfaceInfo(InterfaceInfoUpdateRequest interfaceInfoUpdateRequest);
+
+    /**
+     * 根据用户ID 分页获取接口信息封装
+     *
+     * @param interfaceInfoPage 接口信息分页
+     * @param request           当前会话
+     * @return 接口信息分页
+     */
+    Page<InterfaceInfoVO> getInterfaceInfoVOByUserIdPage(Page<InterfaceInfo> interfaceInfoPage, HttpServletRequest request);
 }

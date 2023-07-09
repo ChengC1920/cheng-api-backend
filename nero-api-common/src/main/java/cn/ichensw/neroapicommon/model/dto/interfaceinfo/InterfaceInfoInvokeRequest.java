@@ -16,9 +16,13 @@ public class InterfaceInfoInvokeRequest implements Serializable {
      */
     private Long id;
     /**
+     * 请求方法
+     */
+    private String method;
+    /**
      * 请求参数
      */
-    private String userRequestParams;
+    private String requestParams;
     /**
      * 主机号
      */

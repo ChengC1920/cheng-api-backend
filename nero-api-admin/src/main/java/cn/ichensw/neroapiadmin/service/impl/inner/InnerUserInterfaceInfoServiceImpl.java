@@ -32,11 +32,29 @@ public class InnerUserInterfaceInfoServiceImpl implements InnerUserInterfaceInfo
         }
         // 修改调用次数
         return userInterfaceInfoService.lambdaUpdate()
-                .eq(UserInterfaceInfo::getInterfaceInfoId,interfaceInfoId)
+                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceInfoId)
                 .eq(UserInterfaceInfo::getUserId, userId)
                 .set(UserInterfaceInfo::getTotalNum, userInterfaceInfo.getTotalNum() + 1)
                 .set(UserInterfaceInfo::getLeftNum, userInterfaceInfo.getLeftNum() - 1)
                 .update();
+    }
+
+    @Override
+    public UserInterfaceInfo hasLeftNum(Long interfaceId, Long userId) {
+        return userInterfaceInfoService.lambdaQuery()
+                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceId)
+                .eq(UserInterfaceInfo::getUserId, userId)
+                .one();
+    }
+
+    @Override
+    public Boolean addDefaultUserInterfaceInfo(Long interfaceId, Long userId) {
+        UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
+        userInterfaceInfo.setUserId(userId);
+        userInterfaceInfo.setInterfaceInfoId(interfaceId);
+        userInterfaceInfo.setLeftNum(99999999);
+
+        return userInterfaceInfoService.save(userInterfaceInfo);
     }
 }
 

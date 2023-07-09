@@ -1,21 +1,21 @@
 package cn.ichensw.neroapiadmin.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.ichensw.neroapiadmin.annotation.AuthCheck;
+import cn.ichensw.neroapiadmin.exception.BusinessException;
+import cn.ichensw.neroapiadmin.exception.ThrowUtils;
+import cn.ichensw.neroapiadmin.service.UserInterfaceInfoService;
+import cn.ichensw.neroapiadmin.service.UserService;
 import cn.ichensw.neroapicommon.common.BaseResponse;
 import cn.ichensw.neroapicommon.common.DeleteRequest;
 import cn.ichensw.neroapicommon.common.ErrorCode;
 import cn.ichensw.neroapicommon.common.ResultUtils;
 import cn.ichensw.neroapicommon.constant.UserConstant;
-import cn.ichensw.neroapiadmin.exception.BusinessException;
-import cn.ichensw.neroapiadmin.exception.ThrowUtils;
 import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
 import cn.ichensw.neroapicommon.model.entity.User;
 import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
-import cn.ichensw.neroapiadmin.service.UserInterfaceInfoService;
-import cn.ichensw.neroapiadmin.service.UserService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 接口管理
- *
  */
 @RestController
 @RequestMapping("/userInterfaceInfo")
@@ -56,9 +55,10 @@ public class UserInterfaceInfoController {
         UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
         BeanUtils.copyProperties(userInterfaceInfoAddRequest, userInterfaceInfo);
 
-        userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, true);
+        userInterfaceInfo.setLeftNum(99999999);
         User loginUser = userService.getLoginUser(request);
         userInterfaceInfo.setUserId(loginUser.getId());
+        userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, true);
         boolean result = userInterfaceInfoService.save(userInterfaceInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newUserInterfaceInfoId = userInterfaceInfo.getId();
@@ -135,6 +135,27 @@ public class UserInterfaceInfoController {
     }
 
     /**
+     * 查询该用户是否拥有该接口权限
+     *
+     * @param interfaceId 接口id
+     * @param request     用户id
+     * @return 是否拥有
+     */
+    @GetMapping("/has/vo")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<UserInterfaceInfo> checkUserHasInterface(long interfaceId, HttpServletRequest request) {
+        if (interfaceId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        UserInterfaceInfo userInterfaceInfo = userInterfaceInfoService.lambdaQuery()
+                .eq(UserInterfaceInfo::getUserId, loginUser.getId())
+                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceId)
+                .one();
+        return ResultUtils.success(userInterfaceInfo);
+    }
+
+    /**
      * 分页获取列表（封装类）
      *
      * @param userInterfaceInfoQueryRequest
@@ -144,7 +165,7 @@ public class UserInterfaceInfoController {
     @PostMapping("/list/page/vo")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<UserInterfaceInfo>> listUserInterfaceInfoVOByPage(@RequestBody UserInterfaceInfoQueryRequest userInterfaceInfoQueryRequest,
-                                                                         HttpServletRequest request) {
+                                                                               HttpServletRequest request) {
         long current = userInterfaceInfoQueryRequest.getCurrent();
         long size = userInterfaceInfoQueryRequest.getPageSize();
         // 限制爬虫
@@ -153,6 +174,7 @@ public class UserInterfaceInfoController {
                 userInterfaceInfoService.getQueryWrapper(userInterfaceInfoQueryRequest));
         return ResultUtils.success(userInterfaceInfoService.getUserInterfaceInfoVOPage(userInterfaceInfoPage, request));
     }
+
 
 
 }

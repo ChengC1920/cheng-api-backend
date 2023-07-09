@@ -20,6 +20,11 @@
             <artifactId>neroapi-client-sdk</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <!--NeroApi Common-->
+        <dependency>
+            <groupId>cn.ichensw</groupId>
+            <artifactId>nero-api-common</artifactId>
+        </dependency>
         <!-- SpringBoot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

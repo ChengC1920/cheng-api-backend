@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -47,6 +46,18 @@ public class InterfaceInfo implements Serializable {
      * 请求参数
      */
     private String requestParams;
+
+
+    /**
+     * 请求参数说明
+     */
+    private String requestParamsRemark;
+
+
+    /**
+     * 响应参数说明
+     */
+    private String responseParamsRemark;
 
     /**
      * 请求头

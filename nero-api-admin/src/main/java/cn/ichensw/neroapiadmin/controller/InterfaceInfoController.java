@@ -1,6 +1,7 @@
 package cn.ichensw.neroapiadmin.controller;
 
 import cn.ichensw.neroapiadmin.annotation.AuthCheck;
+import cn.ichensw.neroapiadmin.config.GatewayConfig;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
 import cn.ichensw.neroapiadmin.exception.ThrowUtils;
 import cn.ichensw.neroapiadmin.service.InterfaceInfoService;
@@ -19,13 +20,13 @@ import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
 import cn.ichensw.neroclientsdk.client.NeroApiClient;
 import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 接口管理
@@ -43,9 +44,7 @@ public class InterfaceInfoController {
     private UserService userService;
 
     @Resource
-    private NeroApiClient neroApiClient;
-
-    private final static Gson GSON = new Gson();
+    private GatewayConfig gatewayConfig;
 
     // region 增删改查
 
@@ -110,15 +109,7 @@ public class InterfaceInfoController {
         if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoUpdateRequest, interfaceInfo);
-        // 参数校验
-        interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
-        long id = interfaceInfoUpdateRequest.getId();
-        // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        boolean result = interfaceInfoService.updateInterfaceInfo(interfaceInfoUpdateRequest);
         return ResultUtils.success(result);
     }
 
@@ -161,33 +152,67 @@ public class InterfaceInfoController {
                 interfaceInfoService.getQueryWrapper(interfaceInfoQueryRequest));
         return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
     }
+    /**
+     * 根据 当前用户ID 分页获取列表（封装类）
+     *
+     * @param interfaceInfoQueryRequest 查询条件
+     * @param request                   请求
+     * @return 分页列表
+     */
+    @PostMapping("/my/list/page/vo")
+    public BaseResponse<Page<InterfaceInfoVO>> listInterfaceInfoVOByUserIdPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
+                                                                         HttpServletRequest request) {
+        long current = interfaceInfoQueryRequest.getCurrent();
+        long size = interfaceInfoQueryRequest.getPageSize();
+        interfaceInfoQueryRequest.setSortField("createTime");
+        // 倒序排序
+        interfaceInfoQueryRequest.setSortOrder(CommonConstant.SORT_ORDER_DESC);
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size),
+                interfaceInfoService.getQueryWrapper(interfaceInfoQueryRequest));
+        return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOByUserIdPage(interfaceInfoPage, request));
+    }
+    // endregion
 
-
+    // region 发布下线接口调用
     /**
      * 发布（仅管理员）
      *
-     * @param idRequest 接口id
+     * @param interfaceInfoInvokeRequest 接口信息
      * @return 是否成功
      */
     @PostMapping("/online")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest) {
-        if (idRequest == null || idRequest.getId() <= 0) {
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                     HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 判断接口是否存在
-        Long id = idRequest.getId();
+        Long id = interfaceInfoInvokeRequest.getId();
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
         ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
         // 判断是否可以调用
-        cn.ichensw.neroclientsdk.model.User user = new cn.ichensw.neroclientsdk.model.User();
-        user.setUsername("neroclientsdk");
-        user.setHost(oldInterfaceInfo.getHost());
-        String username = neroApiClient.getUserNameByPost(user);
-        if (StringUtils.isBlank(username)) {
+        String requestParams = interfaceInfoInvokeRequest.getRequestParams();
+        // 接口请求地址
+        String url = oldInterfaceInfo.getUrl();
+        String method = oldInterfaceInfo.getMethod();
+        // 获取SDK客户端
+        NeroApiClient neroApiClient = interfaceInfoService.getNeroApiClient(request);
+        // 设置网关地址
+        neroApiClient.setGatewayHost(gatewayConfig.getHost());
+        try {
+            // 执行方法
+            String invokeResult = neroApiClient.invokeInterface(requestParams, url, method);
+            if (StringUtils.isBlank(invokeResult)) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口数据为空");
+            }
+        } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
         }
 
+        // 修改接口状态为 上线状态
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         interfaceInfo.setId(id);
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
@@ -225,111 +250,40 @@ public class InterfaceInfoController {
      * @param interfaceInfoInvokeRequest 测试调用请求类
      * @return 是否成功
      */
-    @PostMapping("/invoke")
+    @PostMapping(value = "/invoke")
     public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request) throws UnsupportedEncodingException {
         // 校验传参和接口是否存在
         if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Long id = interfaceInfoInvokeRequest.getId();
-        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
         ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
 
         if (oldInterfaceInfo.getStatus().equals(InterfaceInfoStatusEnum.OFFLINE.getValue())) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
         }
-        // API签名认证，签名正确才能调用
-        User loginUser = userService.getLoginUser(request);
-        String accessKey = loginUser.getAccessKey();
-        String secretKey = loginUser.getSecretKey();
-        NeroApiClient tempApiClient = new NeroApiClient(accessKey, secretKey);
-        Gson gson = new Gson();
-        cn.ichensw.neroclientsdk.model.User user = gson.fromJson(userRequestParams, cn.ichensw.neroclientsdk.model.User.class);
-        user.setHost(interfaceInfoInvokeRequest.getHost());
-        // 调用接口
-        String userNameByPost = tempApiClient.getUserNameByPost(user);
-        return ResultUtils.success(userNameByPost);
-    }
-
-
-    /**
-     * 分页获取当前用户创建的资源列表
-     *
-     * @param interfaceInfoQueryRequest
-     * @param request
-     * @return
-     */
-/*    @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<InterfaceInfoVO>> listMyInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
-            HttpServletRequest request) {
-        if (interfaceInfoQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        // 接口请求地址
+        String url = oldInterfaceInfo.getUrl();
+        String method = oldInterfaceInfo.getMethod();
+        String requestParams = interfaceInfoInvokeRequest.getRequestParams();
+        // 获取SDK客户端
+        NeroApiClient neroApiClient = interfaceInfoService.getNeroApiClient(request);
+        // 设置网关地址
+        neroApiClient.setGatewayHost(gatewayConfig.getHost());
+        String invokeResult = null;
+        try {
+            // 执行方法
+            invokeResult = neroApiClient.invokeInterface(requestParams, url, method);
+            if (StringUtils.isBlank(invokeResult)) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口数据为空");
+            }
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
         }
-        User loginUser = userService.getLoginUser(request);
-        interfaceInfoQueryRequest.setUserId(loginUser.getId());
-        long current = interfaceInfoQueryRequest.getCurrent();
-        long size = interfaceInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size),
-                interfaceInfoService.getQueryWrapper(interfaceInfoQueryRequest));
-        return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
-    }*/
-
+        return ResultUtils.success(invokeResult);
+    }
     // endregion
-
-    /**
-     * 分页搜索（从 ES 查询，封装类）
-     *
-     * @param interfaceInfoQueryRequest
-     * @param request
-     * @return
-     */
-/*    @PostMapping("/search/page/vo")
-    public BaseResponse<Page<InterfaceInfoVO>> searchInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest,
-            HttpServletRequest request) {
-        long size = interfaceInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.searchFromEs(interfaceInfoQueryRequest);
-        return ResultUtils.success(interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request));
-    }*/
-
-    /**
-     * 编辑（用户）
-     *
-     * @param interfaceInfoEditRequest
-     * @param request
-     * @return
-     */
-/*
-    @PostMapping("/edit")
-    public BaseResponse<Boolean> editInterfaceInfo(@RequestBody InterfaceInfoEditRequest interfaceInfoEditRequest, HttpServletRequest request) {
-        if (interfaceInfoEditRequest == null || interfaceInfoEditRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoEditRequest, interfaceInfo);
-        List<String> tags = interfaceInfoEditRequest.getTags();
-        if (tags != null) {
-            interfaceInfo.setTags(GSON.toJson(tags));
-        }
-        // 参数校验
-        interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
-        User loginUser = userService.getLoginUser(request);
-        long id = interfaceInfoEditRequest.getId();
-        // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        ThrowUtils.throwIf(oldInterfaceInfo == null, ErrorCode.NOT_FOUND_ERROR);
-        // 仅本人或管理员可编辑
-        if (!oldInterfaceInfo.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
-        return ResultUtils.success(result);
-    }
-*/
 
 }

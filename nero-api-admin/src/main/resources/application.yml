@@ -92,9 +92,8 @@ cos:
     bucket: xxx
 
 nero:
-  client:
-    access-key: nero
-    secret-key: abcdefgh
+  gateway:
+    host: http://localhost:8090
 
 dubbo:
   application:
@@ -104,4 +103,4 @@ dubbo:
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://localhost:8848
+    address: nacos://192.168.66.19:8848

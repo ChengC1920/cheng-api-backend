@@ -1,7 +1,8 @@
 package cn.ichensw.neroapicommon.common;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 通用返回类
@@ -25,6 +26,10 @@ public class BaseResponse<T> implements Serializable {
 
     public BaseResponse(int code, T data) {
         this(code, data, "");
+    }
+
+    public BaseResponse(int code, String message) {
+        this(code, null, message);
     }
 
     public BaseResponse(ErrorCode errorCode) {

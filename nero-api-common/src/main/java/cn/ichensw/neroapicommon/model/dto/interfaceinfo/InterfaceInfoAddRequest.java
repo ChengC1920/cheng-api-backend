@@ -1,12 +1,14 @@
 package cn.ichensw.neroapicommon.model.dto.interfaceinfo;
 
+import cn.ichensw.neroapicommon.model.vo.RequestParamsRemarkVO;
+import cn.ichensw.neroapicommon.model.vo.ResponseParamsRemarkVO;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 创建请求
- *
  */
 @Data
 public class InterfaceInfoAddRequest implements Serializable {
@@ -29,9 +31,17 @@ public class InterfaceInfoAddRequest implements Serializable {
      */
     private String url;
     /**
-     * 请求参数
+     * 请求参数说明
      */
     private String requestParams;
+    /**
+     * 请求参数说明
+     */
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
     /**
      * 请求头
      */

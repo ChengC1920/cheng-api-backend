@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 @SpringBootApplication(exclude = {
         DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class})@EnableDubbo
+        HibernateJpaAutoConfiguration.class})
+@EnableDubbo
 @Service
 public class NeroApiGatewayApplication {
 

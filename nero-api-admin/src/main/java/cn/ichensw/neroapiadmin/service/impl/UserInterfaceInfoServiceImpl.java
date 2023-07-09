@@ -9,7 +9,6 @@ import cn.ichensw.neroapicommon.common.ErrorCode;
 import cn.ichensw.neroapicommon.constant.CommonConstant;
 import cn.ichensw.neroapicommon.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
-import cn.ichensw.neroapicommon.model.vo.InterfaceInfoVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -46,14 +45,7 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
 
         // 创建时，参数不能为空
         if (add) {
-            ThrowUtils.throwIf(userId == null || interfaceInfoId == null || totalNum == null || leftNum == null, ErrorCode.PARAMS_ERROR);
-        }
-        // 有参数则校验
-        if (leftNum < 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余次数不能小于0");
-        }
-        if (totalNum < 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "总调用次数不能小于0");
+            ThrowUtils.throwIf(userId == null || interfaceInfoId == null, ErrorCode.PARAMS_ERROR);
         }
     }
 

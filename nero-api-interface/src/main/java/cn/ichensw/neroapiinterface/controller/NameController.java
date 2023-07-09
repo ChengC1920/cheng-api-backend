@@ -1,11 +1,12 @@
 package cn.ichensw.neroapiinterface.controller;
 
 import cn.ichensw.neroclientsdk.model.User;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 
 /**
  * @author csw
@@ -13,19 +14,6 @@ import java.io.UnsupportedEncodingException;
 @RestController
 @RequestMapping("/name")
 public class NameController {
-
-    @GetMapping("/get")
-    public String getNameByGet(String name, HttpServletRequest request) {
-        if (Strings.isBlank(name)) {
-            throw new RuntimeException("错误");
-        }
-        return "GET 你的名字是：" + name;
-    }
-
-    @PostMapping("/post")
-    public String getNameByPost(@RequestParam String name) {
-        return "POST 你的名字是：" + name;
-    }
 
     @PostMapping("/user")
     public String getUserNameByPost(@RequestBody User user, HttpServletRequest request) {

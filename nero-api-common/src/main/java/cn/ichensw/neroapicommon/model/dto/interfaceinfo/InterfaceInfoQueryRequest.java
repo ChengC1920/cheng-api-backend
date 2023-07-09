@@ -1,10 +1,15 @@
 package cn.ichensw.neroapicommon.model.dto.interfaceinfo;
 
 import cn.ichensw.neroapicommon.common.PageRequest;
+import cn.ichensw.neroapicommon.model.vo.RequestParamsRemarkVO;
+import cn.ichensw.neroapicommon.model.vo.ResponseParamsRemarkVO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 查询请求
@@ -39,9 +44,13 @@ public class InterfaceInfoQueryRequest extends PageRequest implements Serializab
      */
     private String url;
     /**
-     * 请求参数
+     * 请求参数说明
      */
-    private String requestParams;
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
     /**
      * 请求头
      */
@@ -62,6 +71,11 @@ public class InterfaceInfoQueryRequest extends PageRequest implements Serializab
      * 创建人
      */
     private Long userId;
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
     /**
      * 是否删除(0-未删, 1-已删)
      */

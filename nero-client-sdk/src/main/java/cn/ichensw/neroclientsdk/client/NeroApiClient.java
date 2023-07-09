@@ -1,12 +1,16 @@
 package cn.ichensw.neroclientsdk.client;
 
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.http.Method;
 import cn.hutool.json.JSONUtil;
-import cn.ichensw.neroclientsdk.model.User;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +21,7 @@ import static cn.ichensw.neroclientsdk.utils.SignUtils.genSign;
  */
 public class NeroApiClient {
 
-    public static final String GLOBAL_URL = "http://localhost:8090";
+    public static String GATEWAY_HOST = "http://localhost:8090";
 
 
     private String accessKey;
@@ -29,45 +33,30 @@ public class NeroApiClient {
         this.secretKey = secretKey;
     }
 
-    public String getNameByGet(String name) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        String result = HttpUtil.get(GLOBAL_URL + "/api/name/", paramMap);
-        System.out.println(result);
-        return result;
+    public void setGatewayHost(String gatewayHost) {
+        GATEWAY_HOST = gatewayHost;
     }
 
 
-    public String getNameByPost(String name) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        String result = HttpUtil.post(GLOBAL_URL + "/api/name/", paramMap);
-        System.out.println(result);
-        return result;
-    }
-
-
-    private Map<String, String> getHeaderMap(String body) {
+    private Map<String, String> getHeaderMap(String body, String method) throws UnsupportedEncodingException {
         HashMap<String, String> map = new HashMap<>();
         map.put("accessKey", accessKey);
-//        map.put("secretKey", secretKey);
         map.put("nonce", RandomUtil.randomNumbers(4));
         map.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         map.put("sign", genSign(body, secretKey));
+        body = URLUtil.encode(body, CharsetUtil.CHARSET_UTF_8);
         map.put("body", body);
+        map.put("method", method);
         return map;
     }
 
-    public String getUserNameByPost(User user) {
-        String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post(user.getHost() + "/api/name/user")
-                .addHeaders(getHeaderMap(json))
-                .body(json)
+    public String invokeInterface(String params, String url, String method) throws UnsupportedEncodingException {
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + url)
+                .header("Accept-Charset", CharsetUtil.UTF_8)
+                .addHeaders(getHeaderMap(params, method))
+                .body(params)
                 .execute();
-        System.out.println(httpResponse.getStatus());
-        String result = httpResponse.body();
-        System.out.println(result);
-        return result;
+        return JSONUtil.formatJsonStr(httpResponse.body());
     }
 
 }

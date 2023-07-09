@@ -1,5 +1,7 @@
 package cn.ichensw.neroapicommon.service;
 
+import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
+
 /**
  *
  */
@@ -13,4 +15,26 @@ public interface InnerUserInterfaceInfoService {
      * @return boolean 是否执行成功
      */
     boolean invokeCount(long interfaceInfoId, long userId);
+
+    /**
+     * 是否还有调用次数
+     *
+     * @param interfaceId 接口id
+     * @param userId 用户id
+     * @return UserInterfaceInfo 用户接口信息
+     */
+    UserInterfaceInfo hasLeftNum(Long interfaceId, Long userId);
+
+
+    /**
+     *
+     * 添加默认的用户接口信息
+     *
+     * @param interfaceId 接口id
+     * @param userId 用户id
+     * @return Boolean 是否添加成功
+     */
+    Boolean addDefaultUserInterfaceInfo(Long interfaceId, Long userId);
+
+
 }

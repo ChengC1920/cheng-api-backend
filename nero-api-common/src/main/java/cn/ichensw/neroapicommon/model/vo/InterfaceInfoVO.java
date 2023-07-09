@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 接口信息视图
@@ -47,6 +48,16 @@ public class InterfaceInfoVO implements Serializable {
      * 请求参数
      */
     private String requestParams;
+
+    /**
+     * 请求参数说明
+     */
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
 
     /**
      * 请求头
@@ -92,6 +103,17 @@ public class InterfaceInfoVO implements Serializable {
      * 调用次数
      */
     private Integer totalNum;
+
+    /**
+     * 剩余调用次数
+     */
+    private Integer leftNum;
+
+    /**
+     * 是否被当前用户所拥有
+     */
+    private Boolean isOwnerByCurrentUser;
+
     /**
      * 包装类转对象
      *
