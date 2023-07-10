@@ -29,9 +29,9 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/nero_api
-    username: root
-    password: root
+    url: jdbc:mysql://124.70.63.241:3306/nero_api
+    username: nero_api
+    password: XWdzniGryTTR8zcp
   # Elasticsearch 配置
   # todo 需替换配置，然后取消注释
   #  elasticsearch:
@@ -113,4 +113,4 @@ dubbo:
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://124.70.63.241:8848
+    address: nacos://42.192.149.3:8848
