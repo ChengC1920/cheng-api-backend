@@ -11,16 +11,20 @@ import cn.ichensw.neroapicommon.service.InnerUserInterfaceInfoService;
 import cn.ichensw.neroapicommon.service.InnerUserService;
 import cn.ichensw.neroapigateway.exception.BusinessException;
 import cn.ichensw.neroclientsdk.utils.SignUtils;
+import jodd.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -31,11 +35,14 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author csw
@@ -53,6 +60,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
     @DubboReference
     private InnerInterfaceInfoService innerInterfaceInfoService;
+    @Resource
+    private RedissonClient redissonClient;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -75,8 +86,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 3. 用户鉴权 （判断 accessKey 和 secretKey 是否合法）
         HttpHeaders headers = request.getHeaders();
         String accessKey = headers.getFirst("accessKey");
-        String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
+        String nonce = headers.getFirst("nonce");
         String sign = headers.getFirst("sign");
         String body = URLUtil.decode(headers.getFirst("body"), CharsetUtil.CHARSET_UTF_8);
         String method = headers.getFirst("method");
@@ -85,9 +96,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (invokeUser == null) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "accessKey 不合法！");
         }
-        // 随机数校验是否合法
-        if (Long.parseLong(nonce) > 10000) {
-            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "随机数不合法！");
+        // 判断随机数是否存在，防止重放攻击
+        String existNonce = (String) redisTemplate.opsForValue().get(nonce);
+        if (StringUtil.isNotBlank(existNonce)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求重复！");
         }
         // 时间戳 和 当前时间不能超过 5 分钟 (300000毫秒)
         long currentTimeMillis = System.currentTimeMillis() / 1000;
@@ -113,18 +125,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口不存在！");
         }
-        UserInterfaceInfo userInterfaceInfo = innerUserInterfaceInfoService.hasLeftNum(interfaceInfo.getId(), invokeUser.getId());
-        // 接口未绑定用户
-        if (userInterfaceInfo == null) {
-            Boolean save = innerUserInterfaceInfoService.addDefaultUserInterfaceInfo(interfaceInfo.getId(), invokeUser.getId());
-            if (save == null || !save) {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口绑定用户失败！");
-            }
-        }
-        if (userInterfaceInfo != null && userInterfaceInfo.getLeftNum() <= 0) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, "调用次数已用完！");
-        }
-
 
         // 5. 请求转发，调用模拟接口
         // 6. 响应日志
@@ -173,7 +173,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                                     fluxBody.map(dataBuffer -> {
                                         // 7. 调用成功，接口调用次数 + 1 invokeCount
                                         try {
-                                            innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
+                                            postHandler(exchange.getRequest(),exchange.getResponse(),interfaceInfoId, userId);
                                         } catch (Exception e) {
                                             log.error("invokeCount error", e);
                                             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口调用次数 + 1 失败！");
@@ -207,5 +207,39 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             log.error("网关处理异常响应.\n" + e);
             return chain.filter(exchange);
         }
+    }
+
+    private void postHandler(ServerHttpRequest request, ServerHttpResponse response, Long interfaceInfoId, Long userId) {
+        RLock lock = redissonClient.getLock("api:add_interface_num");
+        if (response.getStatusCode() == HttpStatus.OK) {
+            CompletableFuture.runAsync(() -> {
+                if (lock.tryLock()) {
+                    try {
+                        addInterfaceNum(request, interfaceInfoId, userId);
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+            });
+        }
+    }
+    private void addInterfaceNum(ServerHttpRequest request, Long interfaceInfoId, Long userId) {
+        String nonce = request.getHeaders().getFirst("nonce");
+        if (StringUtil.isEmpty(nonce)){
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求重复");
+        }
+        UserInterfaceInfo userInterfaceInfo = innerUserInterfaceInfoService.hasLeftNum(interfaceInfoId, userId);
+        // 接口未绑定用户
+        if (userInterfaceInfo == null) {
+            Boolean save = innerUserInterfaceInfoService.addDefaultUserInterfaceInfo(interfaceInfoId, userId);
+            if (save == null || !save) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口绑定用户失败！");
+            }
+        }
+        if (userInterfaceInfo != null && userInterfaceInfo.getLeftNum() <= 0) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "调用次数已用完！");
+        }
+        redisTemplate.opsForValue().set(nonce, 1, 5, TimeUnit.MINUTES);
+        innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
     }
 }

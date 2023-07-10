@@ -5,12 +5,9 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.http.Method;
 import cn.hutool.json.JSONUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +38,7 @@ public class NeroApiClient {
     private Map<String, String> getHeaderMap(String body, String method) throws UnsupportedEncodingException {
         HashMap<String, String> map = new HashMap<>();
         map.put("accessKey", accessKey);
-        map.put("nonce", RandomUtil.randomNumbers(4));
+        map.put("nonce", RandomUtil.randomNumbers(10));
         map.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         map.put("sign", genSign(body, secretKey));
         body = URLUtil.encode(body, CharsetUtil.CHARSET_UTF_8);

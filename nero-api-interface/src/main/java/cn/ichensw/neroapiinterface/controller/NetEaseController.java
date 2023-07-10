@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class NetEaseController {
 
-    @PostMapping("/comments.163")
+    @PostMapping("/api/comments.163")
     public String hotComments(HttpServletRequest request) {
         String url = "https://api.uomg.com/api/comments.163";
         String body = URLUtil.decode(request.getHeader("body"), CharsetUtil.CHARSET_UTF_8);
@@ -28,7 +28,7 @@ public class NetEaseController {
         return httpResponse.body();
     }
 
-    @PostMapping("/rand.music")
+    @PostMapping("/api/rand.music")
     public String randMusic(HttpServletRequest request) {
         String url = "https://api.uomg.com/api/rand.music";
         String body = URLUtil.decode(request.getHeader("body"), CharsetUtil.CHARSET_UTF_8);

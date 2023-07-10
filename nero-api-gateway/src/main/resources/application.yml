@@ -8,7 +8,11 @@ spring:
         - id: path_route
           uri: http://localhost:8123
           predicates:
-            - Path=/**/**
+            - Path=/**
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
 
 logging:
   level:
@@ -25,3 +29,4 @@ dubbo:
   registry:
     id: nacos-registry
     address: nacos://192.168.66.19:8848
+

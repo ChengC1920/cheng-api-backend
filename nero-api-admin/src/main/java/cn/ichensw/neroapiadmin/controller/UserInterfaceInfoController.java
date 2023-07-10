@@ -135,27 +135,6 @@ public class UserInterfaceInfoController {
     }
 
     /**
-     * 查询该用户是否拥有该接口权限
-     *
-     * @param interfaceId 接口id
-     * @param request     用户id
-     * @return 是否拥有
-     */
-    @GetMapping("/has/vo")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<UserInterfaceInfo> checkUserHasInterface(long interfaceId, HttpServletRequest request) {
-        if (interfaceId <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User loginUser = userService.getLoginUser(request);
-        UserInterfaceInfo userInterfaceInfo = userInterfaceInfoService.lambdaQuery()
-                .eq(UserInterfaceInfo::getUserId, loginUser.getId())
-                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceId)
-                .one();
-        return ResultUtils.success(userInterfaceInfo);
-    }
-
-    /**
      * 分页获取列表（封装类）
      *
      * @param userInterfaceInfoQueryRequest

@@ -27,7 +27,17 @@
             <artifactId>nero-api-common</artifactId>
         </dependency>
 
-
+        <!--引入Redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--Redisson依赖-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.19.3</version>
+        </dependency>
         <!-- Spring Cloud Gateway-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

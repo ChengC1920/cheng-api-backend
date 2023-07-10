@@ -2,6 +2,7 @@ package cn.ichensw.neroapiadmin.service.impl.inner;
 
 import cn.ichensw.neroapiadmin.exception.BusinessException;
 import cn.ichensw.neroapiadmin.service.UserInterfaceInfoService;
+import cn.ichensw.neroapiadmin.service.UserService;
 import cn.ichensw.neroapicommon.common.ErrorCode;
 import cn.ichensw.neroapicommon.model.entity.UserInterfaceInfo;
 import cn.ichensw.neroapicommon.service.InnerUserInterfaceInfoService;
@@ -19,6 +20,9 @@ public class InnerUserInterfaceInfoServiceImpl implements InnerUserInterfaceInfo
 
     @Resource
     private UserInterfaceInfoService userInterfaceInfoService;
+
+    @Resource
+    private UserService userService;
 
     @Override
     public boolean invokeCount(long interfaceInfoId, long userId) {
@@ -55,6 +59,17 @@ public class InnerUserInterfaceInfoServiceImpl implements InnerUserInterfaceInfo
         userInterfaceInfo.setLeftNum(99999999);
 
         return userInterfaceInfoService.save(userInterfaceInfo);
+    }
+
+    @Override
+    public UserInterfaceInfo checkUserHasInterface(long interfaceId, long userId) {
+        if (interfaceId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return userInterfaceInfoService.lambdaQuery()
+                .eq(UserInterfaceInfo::getUserId, userId)
+                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceId)
+                .one();
     }
 }
 
