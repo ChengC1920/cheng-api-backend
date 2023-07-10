@@ -91,6 +91,14 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String sign = headers.getFirst("sign");
         String body = URLUtil.decode(headers.getFirst("body"), CharsetUtil.CHARSET_UTF_8);
         String method = headers.getFirst("method");
+
+        if (StringUtil.isEmpty(nonce)
+                || StringUtil.isEmpty(sign)
+                || StringUtil.isEmpty(timestamp)
+                || StringUtil.isEmpty(method)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求头参数不完整！");
+        }
+
         // 通过 accessKey 查询是否存在该用户
         User invokeUser = innerUserService.getInvokeUser(accessKey);
         if (invokeUser == null) {
@@ -110,7 +118,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 校验签名
         // 应该通过 accessKey 查询数据库中的 secretKey 生成 sign 和前端传递的 sign 对比
         String serverSign = SignUtils.genSign(body, invokeUser.getSecretKey());
-        if (sign != null && !sign.equals(serverSign)) {
+        if (!sign.equals(serverSign)) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "签名错误！");
         }
 

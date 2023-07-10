@@ -90,6 +90,16 @@ cos:
     secretKey: xxx
     region: xxx
     bucket: xxx
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    urlPrefix: http://nero-api-project.oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: LTAI5tF4yknHS8v7yLrkB8mh
+    accessKeySecret: Q3XYGDvyDDMYAVZJvGqyXz3lgOUSPi
+    bucketName: nero-api-project
+    fileHost: files
+
+
 
 nero:
   gateway:
@@ -103,4 +113,4 @@ dubbo:
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://192.168.66.19:8848
+    address: nacos://124.70.63.241:8848

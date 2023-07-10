@@ -1,5 +1,6 @@
 package cn.ichensw.neroapiadmin.controller;
 
+import cn.hutool.json.JSONUtil;
 import cn.ichensw.neroapiadmin.annotation.AuthCheck;
 import cn.ichensw.neroapiadmin.config.GatewayConfig;
 import cn.ichensw.neroapiadmin.exception.BusinessException;
@@ -66,6 +67,8 @@ public class InterfaceInfoController {
         interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
         interfaceInfo.setUserId(loginUser.getId());
+        interfaceInfo.setRequestParamsRemark(JSONUtil.toJsonStr(interfaceInfoAddRequest.getRequestParamsRemark()));
+        interfaceInfo.setResponseParamsRemark(JSONUtil.toJsonStr(interfaceInfoAddRequest.getResponseParamsRemark()));
         boolean result = interfaceInfoService.save(interfaceInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newInterfaceInfoId = interfaceInfo.getId();

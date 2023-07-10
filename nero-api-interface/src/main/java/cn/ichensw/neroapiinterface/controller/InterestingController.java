@@ -45,4 +45,14 @@ public class InterestingController {
     }
 
 
+    @PostMapping("/api/long2dwz")
+    public String long2dwz(HttpServletRequest request) {
+        String url = "https://api.uomg.com/api/long2dwz";
+        String body = URLUtil.decode(request.getHeader("body"), CharsetUtil.CHARSET_UTF_8);
+        HttpResponse httpResponse = HttpRequest.get(url + "?" + body)
+                .execute();
+        return httpResponse.body();
+    }
+
+
 }
