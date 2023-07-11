@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author csw
@@ -42,6 +43,14 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         Long interfaceInfoId = userInterfaceInfo.getInterfaceInfoId();
         Integer totalNum = userInterfaceInfo.getTotalNum();
         Integer leftNum = userInterfaceInfo.getLeftNum();
+
+        List<UserInterfaceInfo> list = this.lambdaQuery()
+                .eq(UserInterfaceInfo::getUserId, userId)
+                .eq(UserInterfaceInfo::getInterfaceInfoId, interfaceInfoId)
+                .list();
+        if (!list.isEmpty()) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "该用户已经拥有该接口");
+        }
 
         // 创建时，参数不能为空
         if (add) {

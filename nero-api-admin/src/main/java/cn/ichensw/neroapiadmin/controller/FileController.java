@@ -6,10 +6,7 @@ import cn.ichensw.neroapicommon.common.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -51,7 +48,7 @@ public class FileController {
      * 通用上传请求（多个）
      */
     @PostMapping("/uploads")
-    public BaseResponse<Map<String, Object>>  uploadFiles(List<MultipartFile> files) throws Exception {
+    public BaseResponse<Map<String, Object>> uploadFiles(List<MultipartFile> files) throws Exception {
         try {
             // 上传文件路径
 //            String filePath = RuoYiConfig.getUploadPath();
@@ -70,10 +67,10 @@ public class FileController {
                 originalFilenames.add(file.getOriginalFilename());
             }
             Map<String, Object> result = new HashMap<>();
-            result.put("urls" , StringUtils.join(urls, FILE_DELIMITER));
-            result.put("fileNames" , StringUtils.join(fileNames, FILE_DELIMITER));
+            result.put("urls", StringUtils.join(urls, FILE_DELIMITER));
+            result.put("fileNames", StringUtils.join(fileNames, FILE_DELIMITER));
 //            result.put("newFileNames" , StringUtils.join(newFileNames, FILE_DELIMITER));
-            result.put("originalFilenames" , StringUtils.join(originalFilenames, FILE_DELIMITER));
+            result.put("originalFilenames", StringUtils.join(originalFilenames, FILE_DELIMITER));
             return ResultUtils.success(result);
         } catch (Exception e) {
             throw new Exception("上传文件失败");
