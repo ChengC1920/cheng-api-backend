@@ -1,0 +1,5 @@
+cn\ichensw\neroclientsdk\client\NeroApiClient.class
+cn\ichensw\neroclientsdk\utils\SignUtils.class
+cn\ichensw\neroclientsdk\model\User.class
+META-INF\spring-configuration-metadata.json
+cn\ichensw\neroclientsdk\NeroApiClientConfig.class

@@ -1,0 +1,105 @@
+{
+  "groups": [
+    {
+      "name": "aliyun.oss",
+      "type": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "cos.client",
+      "type": "cn.ichensw.neroapiadmin.config.CosClientConfig",
+      "sourceType": "cn.ichensw.neroapiadmin.config.CosClientConfig"
+    },
+    {
+      "name": "nero.gateway",
+      "type": "cn.ichensw.neroapiadmin.config.GatewayConfig",
+      "sourceType": "cn.ichensw.neroapiadmin.config.GatewayConfig"
+    },
+    {
+      "name": "wx.open",
+      "type": "cn.ichensw.neroapiadmin.config.WxOpenConfig",
+      "sourceType": "cn.ichensw.neroapiadmin.config.WxOpenConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "aliyun.oss.access-key-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "aliyun.oss.access-key-secret",
+      "type": "java.lang.String",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "aliyun.oss.bucket-name",
+      "type": "java.lang.String",
+      "description": "OSS的Bucket名称",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "aliyun.oss.end-point",
+      "type": "java.lang.String",
+      "description": "地域节点",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "aliyun.oss.file-host",
+      "type": "java.lang.String",
+      "description": "目标文件夹",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "aliyun.oss.url-prefix",
+      "type": "java.lang.String",
+      "description": "Bucket 域名",
+      "sourceType": "cn.ichensw.neroapiadmin.config.AliyunOSSConfig"
+    },
+    {
+      "name": "cos.client.access-key",
+      "type": "java.lang.String",
+      "description": "accessKey",
+      "sourceType": "cn.ichensw.neroapiadmin.config.CosClientConfig"
+    },
+    {
+      "name": "cos.client.bucket",
+      "type": "java.lang.String",
+      "description": "桶名",
+      "sourceType": "cn.ichensw.neroapiadmin.config.CosClientConfig"
+    },
+    {
+      "name": "cos.client.region",
+      "type": "java.lang.String",
+      "description": "区域",
+      "sourceType": "cn.ichensw.neroapiadmin.config.CosClientConfig"
+    },
+    {
+      "name": "cos.client.secret-key",
+      "type": "java.lang.String",
+      "description": "secretKey",
+      "sourceType": "cn.ichensw.neroapiadmin.config.CosClientConfig"
+    },
+    {
+      "name": "nero.gateway.host",
+      "type": "java.lang.String",
+      "sourceType": "cn.ichensw.neroapiadmin.config.GatewayConfig"
+    },
+    {
+      "name": "wx.open.app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.ichensw.neroapiadmin.config.WxOpenConfig"
+    },
+    {
+      "name": "wx.open.app-secret",
+      "type": "java.lang.String",
+      "sourceType": "cn.ichensw.neroapiadmin.config.WxOpenConfig"
+    },
+    {
+      "name": "wx.open.wx-mp-service",
+      "type": "me.chanjar.weixin.mp.api.WxMpService",
+      "sourceType": "cn.ichensw.neroapiadmin.config.WxOpenConfig"
+    }
+  ],
+  "hints": []
+}
