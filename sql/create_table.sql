@@ -1,4 +1,6 @@
-use nero_api;
+create database if not exists chengapi;
+
+use chengapi;
 
 create table if not exists interface_info
 (
