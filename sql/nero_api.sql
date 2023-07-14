@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 80032
  Source Host           : localhost:3306
- Source Schema         : nero_api
+ Source Schema         : cheng_api
 
  Target Server Type    : MySQL
  Target Server Version : 80032
@@ -46,7 +46,7 @@ CREATE TABLE `interface_info`  (
 -- ----------------------------
 -- Records of interface_info
 -- ----------------------------
-INSERT INTO `interface_info` VALUES (1, '获取当前用户名称', '获取用户名称', '/api/name/user', 'http://localhost:8090', '{\n    \"username\": \"nero\"\n}', NULL, NULL, '{\"Content-Type\": \"application/json\"}', '{\"Content-Type\": \"application/json\"}', 1, 'POST', 1667508636207661058, '2023-06-14 21:18:10', '2023-07-10 11:24:01', 0);
+INSERT INTO `interface_info` VALUES (1, '获取当前用户名称', '获取用户名称', '/api/name/user', 'http://localhost:8090', '{\n    \"username\": \"cheng\"\n}', NULL, NULL, '{\"Content-Type\": \"application/json\"}', '{\"Content-Type\": \"application/json\"}', 1, 'POST', 1667508636207661058, '2023-06-14 21:18:10', '2023-07-10 11:24:01', 0);
 INSERT INTO `interface_info` VALUES (24, '随机头像', '随机获取一个头像地址', '/api/rand.avatar', 'https://api.uomg.com', 'sort=男&format=json', '[{\"id\":1688957070977,\"name\":\"sort\",\"isRequired\":\"no\",\"type\":\"string\",\"remark\":\"选择输出分类[男|女|动漫男|动漫女]，为空随机输出\"},{\"id\":1688957075391,\"name\":\"format\",\"isRequired\":\"no\",\"type\":\"string\",\"remark\":\"选择输出格式[json|images]\"}]', '[{\"id\":1688957088125,\"name\":\"code\",\"type\":\"string\",\"remark\":\"返回的状态码\"},{\"id\":1688957090261,\"name\":\"imgurl\",\"type\":\"string\",\"remark\":\"返回图片地址\"},{\"id\":1688957090855,\"name\":\"msg\",\"type\":\"string\",\"remark\":\"返回错误提示信息！\"}]', '{\"Content-Type\": \"application/json\"}', '{\"Content-Type\": \"application/json\"}', 1, 'GET', 1667508636207661058, '2023-07-08 12:07:23', '2023-07-10 10:45:10', 0);
 INSERT INTO `interface_info` VALUES (26, '网易云音乐随机歌曲', '网易云音乐，随机歌曲输出。', '/api/rand.music', 'https://api.uomg.com', 'sort=热歌榜&format=json', '[{\"id\":1,\"name\":\"sort\",\"isRequired\":\"否\",\"type\":\"string\",\"remark\":\"选择输出分类[热歌榜|新歌榜|飙升榜|抖音榜|电音榜]，为空输出热歌榜\"},{\"id\":2,\"name\":\"mid\",\"isRequired\":\"否\",\"type\":\"int\",\"remark\":\"网易云歌单ID\"},{\"id\":1688815371547,\"name\":\"format\",\"isRequired\":\"no\",\"type\":\"string\",\"remark\":\"选择输出格式[json|mp3]\"}]', '[{\"id\":1688815422793,\"name\":\"code\",\"type\":\"string\",\"remark\":\"返回的状态码\"},{\"id\":1688815424624,\"name\":\"data\",\"type\":\"string\",\"remark\":\"返回歌曲数据\"},{\"id\":1688815425060,\"name\":\"msg\",\"type\":\"string\",\"remark\":\"返回错误提示信息\"}]', '{\"Content-Type\": \"application/json\"}', '{\"Content-Type\": \"application/json\"}', 1, 'GET', 1667508636207661058, '2023-07-08 16:30:06', '2023-07-08 19:43:01', 0);
 INSERT INTO `interface_info` VALUES (27, '网易云音乐热门评论', '网易云音乐热门评论随机API接口', '/api/comments.163', 'https://api.uomg.com', 'format=json', '[{\"id\":1688816624700,\"name\":\"mid\",\"isRequired\":\"no\",\"type\":\"int\",\"remark\":\"网易云歌单ID\"},{\"id\":1688816632619,\"name\":\"format\",\"isRequired\":\"no\",\"type\":\"string\",\"remark\":\"选择输出格式[json|mp3]\"}]', '[{\"id\":1688816648171,\"name\":\"code\",\"type\":\"string\",\"remark\":\"返回的状态码\"},{\"id\":1688816649732,\"name\":\"data\",\"type\":\"string\",\"remark\":\"返回评论数据\"},{\"id\":1688816650394,\"name\":\"msg\",\"type\":\"string\",\"remark\":\"返回错误提示信息\"}]', NULL, NULL, 1, 'GET', 1667508636207661058, '2023-07-08 17:05:42', '2023-07-10 11:24:32', 0);
@@ -83,7 +83,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1667508636207661058, 'nero', '40576063cc4e128bee21f333df54d346', NULL, NULL, 'Nero', 'https://yupao-project-ichensw.oss-cn-hangzhou.aliyuncs.com/PEej0vHQ-4.jpg', NULL, 'admin', '53349ea7504b8985606a8edbda11e314', '82b9389e40dd4c589feebd12fe60786a', '2023-06-10 20:26:54', '2023-07-10 23:12:03', 0);
+INSERT INTO `user` VALUES (1667508636207661058, 'cheng', '40576063cc4e128bee21f333df54d346', NULL, NULL, 'Cheng', 'https://yupao-project-ichensw.oss-cn-hangzhou.aliyuncs.com/PEej0vHQ-4.jpg', NULL, 'admin', '53349ea7504b8985606a8edbda11e314', '82b9389e40dd4c589feebd12fe60786a', '2023-06-10 20:26:54', '2023-07-10 23:12:03', 0);
 INSERT INTO `user` VALUES (1668967663894642689, 'niko', '40576063cc4e128bee21f333df54d346', NULL, NULL, 'Niko', 'https://image-bed-ichensw.oss-cn-hangzhou.aliyuncs.com/006VVqOWgy1h43uaynbyxj30go0go0u7.jpg', NULL, 'user', '6ab93d6aae79d390562ec73127c7446c', '95848fadb0461070537d9a519e71e22c', '2023-06-14 21:04:33', '2023-06-14 21:10:18', 0);
 
 -- ----------------------------

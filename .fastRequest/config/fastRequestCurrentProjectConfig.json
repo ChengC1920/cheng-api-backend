@@ -7,7 +7,7 @@
 					"url":""
 				}
 			],
-			"name":"nero-api-backend"
+			"name":"cheng-api-backend"
 		}
 	],
 	"envList":[
@@ -17,7 +17,7 @@
 	"postScript":"",
 	"preScript":"",
 	"projectList":[
-		"nero-api-backend"
+		"cheng-api-backend"
 	],
 	"syncModel":{
 		"branch":"master",

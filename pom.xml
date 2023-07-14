@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>nero-api-admin</module>
-        <module>nero-api-gateway</module>
-        <module>nero-api-interface</module>
-        <module>nero-api-common</module>
+        <module>cheng-api-admin</module>
+        <module>cheng-api-gateway</module>
+        <module>cheng-api-interface</module>
+        <module>cheng-api-common</module>
     </modules>
 
     <parent>
@@ -22,13 +22,13 @@
     </parent>
 
     <groupId>cn.ichensw</groupId>
-    <artifactId>nero-api-backend</artifactId>
+    <artifactId>cheng-api-backend</artifactId>
     <version>0.0.1</version>
 
-    <name>nero-api-backend</name>
+    <name>cheng-api-backend</name>
 
     <properties>
-        <nero-api.version>0.0.1</nero-api.version>
+        <cheng-api.version>0.0.1</cheng-api.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
@@ -64,20 +64,20 @@
             <!--后台管理模块-->
             <dependency>
                 <groupId>cn.ichensw</groupId>
-                <artifactId>nero-api-admin</artifactId>
-                <version>${nero-api.version}</version>
+                <artifactId>cheng-api-admin</artifactId>
+                <version>${cheng-api.version}</version>
             </dependency>
             <!--网关模块-->
             <dependency>
                 <groupId>cn.ichensw</groupId>
-                <artifactId>nero-api-gateway</artifactId>
-                <version>${nero-api.version}</version>
+                <artifactId>cheng-api-gateway</artifactId>
+                <version>${cheng-api.version}</version>
             </dependency>
             <!--通用模块-->
             <dependency>
                 <groupId>cn.ichensw</groupId>
-                <artifactId>nero-api-common</artifactId>
-                <version>${nero-api.version}</version>
+                <artifactId>cheng-api-common</artifactId>
+                <version>${cheng-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
